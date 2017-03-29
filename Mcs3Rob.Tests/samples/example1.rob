@@ -1,0 +1,16 @@
+; example 1
+
+1           ; Emulation module number 1..n
+27256       ; ROM size in KB (or ROM type such as 27256, 27512)
+0           ; Control unit type
+-1          ; MC cycle trigger address (-1 = unknown)
+0           ; reserve = 0
+10          ; MC bus monitoring time gate [ms]
+0           ; reserve = 0
+$0804       ; ROM/RAM Off-set parameter
+0           ; reserve = 0
+.           ; End marker ROM description header
+
+DEVPARM     ; New Description Block for 32 bit offset definition
+0,$80000    ;; 32 bit off-set into ROM image, 32 bit off-set for PROVARI address
+            ;; Default = 0      , Default = Size of ROM in Bytes

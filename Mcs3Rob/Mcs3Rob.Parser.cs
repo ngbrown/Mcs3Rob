@@ -16,5 +16,11 @@ namespace Mcs3Rob
             this.Scanner = new Mcs3RobScanner(stream);
             this.Parse();
         }
+
+        public void Parse(Stream file)
+        {
+            this.Scanner = new Mcs3RobScanner(file);
+            this.Parse();
+        }
     }
 }
