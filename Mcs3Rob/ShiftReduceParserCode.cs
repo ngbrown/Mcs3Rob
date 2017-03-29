@@ -606,16 +606,16 @@ namespace QUT.Gppg {
     /// will expect to deal with this type.
     /// </summary>
 #if EXPORT_GPPG
-    public class LexLocation : IMerge<LexLocation>
+    public struct LexLocation : IMerge<LexLocation>
 #else
     [SuppressMessage( "Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses" )]
-    internal class LexLocation : IMerge<LexLocation>
+    internal struct LexLocation : IMerge<LexLocation>
 #endif
  {
-        private int startLine;   // start line
-        private int startColumn; // start column
-        private int endLine;     // end line
-        private int endColumn;   // end column
+        private readonly int startLine;   // start line
+        private readonly int startColumn; // start column
+        private readonly int endLine;     // end line
+        private readonly int endColumn;   // end column
 
         /// <summary>
         /// The line at which the text span starts.
@@ -637,11 +637,6 @@ namespace QUT.Gppg {
         /// beyond the end of the text span.
         /// </summary>
         public int EndColumn { get { return endColumn; } }
-
-        /// <summary>
-        /// Default no-arg constructor.
-        /// </summary>
-        public LexLocation() { }
 
         /// <summary>
         /// Constructor for text-span with given start and end.
