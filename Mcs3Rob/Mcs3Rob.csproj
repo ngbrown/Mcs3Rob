@@ -94,7 +94,7 @@
       <Output TaskParameter="Outputs" ItemName="Mcs3RobScanner" />
     </Exec>
     <Message Text="Generating parser for $(Mcs3RobParser) ..." />
-    <Exec Command="$(GppgTool) /no-lines /gplex &quot;$(Mcs3RobParser).Language.grammar.y&quot; &gt; &quot;$(Mcs3RobParser).Parser.Generated.cs&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(Mcs3RobParser).Parser.Generated.cs">
+    <Exec Command="$(GppgTool) /no-lines /gplex /report /conflicts &quot;$(Mcs3RobParser).Language.grammar.y&quot; &gt; &quot;$(Mcs3RobParser).Parser.Generated.cs&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(Mcs3RobParser).Parser.Generated.cs">
       <Output TaskParameter="Outputs" ItemName="Mcs3Rob" />
     </Exec>
   </Target>

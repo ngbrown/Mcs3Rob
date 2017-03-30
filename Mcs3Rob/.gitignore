@@ -2,3 +2,5 @@
 *.Parser.Generated.cs
 *.Scanner.Generated.cs
 *.lst
+*.grammar.conflicts
+*.grammar.report.html
