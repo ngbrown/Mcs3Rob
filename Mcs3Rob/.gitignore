@@ -1,3 +1,4 @@
 /GplexBuffers.cs
 *.Parser.Generated.cs
 *.Scanner.Generated.cs
+*.lst
