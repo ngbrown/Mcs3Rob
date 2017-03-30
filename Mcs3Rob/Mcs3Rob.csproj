@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GplexBuffers.cs" />
+    <Compile Include="Mcs3RobFile.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShiftReduceParserCode.cs" />
