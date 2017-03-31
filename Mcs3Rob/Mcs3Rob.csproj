@@ -90,7 +90,7 @@
   <Target Name="YltBuildGen" DependsOnTargets="GenerateMcs3Rob" />
   <Target Name="GenerateMcs3Rob" Inputs="$(Mcs3RobParser).Language.analyzer.lex;$(Mcs3RobParser).Language.grammar.y" Outputs="$(Mcs3RobParser).Scanner.Generated.cs;$(Mcs3RobParser).Parser.Generated.cs">
     <Message Text="Generating scanner for $(Mcs3RobParser) ..." />
-    <Exec Command="$(GplexTool) &quot;/out:$(Mcs3RobParser).Scanner.Generated.cs&quot; &quot;$(Mcs3RobParser).Language.analyzer.lex&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(GenDir)Scanner.cs">
+    <Exec Command="$(GplexTool) /listing /summary &quot;/out:$(Mcs3RobParser).Scanner.Generated.cs&quot; &quot;$(Mcs3RobParser).Language.analyzer.lex&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(GenDir)Scanner.cs">
       <Output TaskParameter="Outputs" ItemName="Mcs3RobScanner" />
     </Exec>
     <Message Text="Generating parser for $(Mcs3RobParser) ..." />

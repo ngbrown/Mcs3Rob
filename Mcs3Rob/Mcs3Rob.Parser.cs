@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
@@ -13,14 +14,33 @@ namespace Mcs3Rob
         {
             byte[] inputBuffer = System.Text.Encoding.Default.GetBytes(s);
             MemoryStream stream = new MemoryStream(inputBuffer);
-            this.Scanner = new Mcs3RobScanner(stream);
-            this.Parse();
+
+            this.Parse(stream);
         }
 
-        public void Parse(Stream file)
+        public void Parse(Stream stream)
         {
-            this.Scanner = new Mcs3RobScanner(file);
-            this.Parse();
+            var robScanner = new Mcs3RobScanner(stream);
+            robScanner.Initialize();
+            robScanner.Error += (sender, args) => Error?.Invoke(sender, args);
+
+            this.Scanner = robScanner;
+            if (!this.Parse())
+            {
+                OnError(new ErrorEventArgs(new ErrorContext(3, this.Scanner.yylloc)));
+            }
+        }
+
+        private void ParseError(int errorCode, LexLocation lexLocation)
+        {
+            OnError(new ErrorEventArgs(new ErrorContext(errorCode, lexLocation)));
+        }
+
+        public virtual event EventHandler<Mcs3Rob.ErrorEventArgs> Error;
+
+        protected virtual void OnError(ErrorEventArgs e)
+        {
+            Error?.Invoke(this, e);
         }
     }
 }

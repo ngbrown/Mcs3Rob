@@ -17,6 +17,8 @@
 %token SPACE
 %token ENDMARKER
 %token DEVPARAM, PROCONST2, PROVARI2, CHARLINE2, CAHRMAP2, CHARSPACE, ROMTEXT
+%token EOL
+%token SCANERROR
 
 %token comma ","
 
@@ -32,12 +34,30 @@ DescriptionSeq
     ;
 
 DescriptionBlock
-    : DEVPARAM number comma number 
-    | error
+    : DevparamBlock
+    | error                         { ParseError(0, @1); }
     ;
 
 file_header
-    : number number number number number number number number number ENDMARKER { Console.Error.WriteLine("Rule -> file_header: {0}", string.Join(", ", $1.n, $2.n, $3.n, $4.n, $5.n, $6.n, $7.n, $8.n, $9.n)); }
+    : HeaderSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> file_header: {0}", string.Join(", ", $1.n)); }
+    ;
+
+DevparamBlock
+    : DEVPARAM HeaderSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> devparam: {0}", string.Join(", ", $1.n)); }
+    ;
+
+HeaderSeq
+    : HeaderSeq HeaderItemSeq EOL
+    | HeaderItemSeq EOL
+    ;
+
+HeaderItemSeq
+    : HeaderItemSeq comma HeaderItem
+    | HeaderItem
+    ;
+
+HeaderItem
+    : number
     ;
 
 number

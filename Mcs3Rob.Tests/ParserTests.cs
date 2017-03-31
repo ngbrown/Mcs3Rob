@@ -12,19 +12,33 @@ namespace Mcs3Rob.Tests
     public class ParserTests
     {
         [Test]
-        public void ScanRobFile()
+        [TestCase("example1.rob")]
+        [TestCase("example2.rob")]
+        public void ScanRobFile(string fileName)
         {
-            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", "example1.rob");
+            var errorList = new List<Tuple<object, ErrorEventArgs>>();
+
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
+            parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             parser.Scan(fullPath);
+
+            Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
         }
 
         [Test]
-        public void ParseRobFile()
+        [TestCase("example1.rob")]
+        [TestCase("example2.rob")]
+        public void ParseRobFile(string fileName)
         {
-            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", "example1.rob");
+            var errorList = new List<Tuple<object, ErrorEventArgs>>();
+
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
+            parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             parser.Parse(fullPath);
+
+            Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
         }
     }
 }

@@ -1,0 +1,64 @@
+;====================================================================== 
+;====================================================================== 
+; MCS.3 Delco 68HC12 ECU ROB file
+;
+; Accurate Technologies Inc.
+; Tel: 248-848-9200  Fax: 248-848-9016
+; 24-Apr-97
+;====================================================================== 
+;		REVISION BLOCK
+;
+;  SOFTWARE RELEASE 80
+;
+;
+;
+;
+;
+
+1                ; MCS device number [1..4]
+64KB             ; Binary image (.BIN file) size [KByte]
+
+0x0204           ; Control unit type
+             ;  Bit0 = byte order (0-Motorola, 1-Intel)
+             ;  Bit1 = enable Bosch ECU (special protocol)
+             ;  Bit2 = use kbps for CCP, else define bit timing regs
+             ;  Bit3 = force extended ID's for CCP, else auto select ID
+             ;  Bit4 = Remote Tx request operation for DTO
+             ;       = enable 16-bit rom emulation
+             ;  Bit5 = Protocol version, 1-CCP V1.01+
+             ;  Bit6
+             ;  Bit7
+             ;  Bit8 = SER
+             ;  Bit9 = CAN
+             ;  Bit10 = ABUS
+             ;  Bit11 = enable floating cursor (EMU)
+             ;  if Bit8=Bit10=1, virtual ECU (MCS analog I/O module)
+
+1000             ; ROM: Cycle trigger address (-1 = unknown)
+             ; CAN: bus frequency (kbps)
+             ; ANIO: signal averaging time (ms)
+
+0x0001           ; CAN: CAN ECU Node ID
+
+10               ; ROM: Bus monitoring time gate (ms)
+             ; CAN: Default sampling interval (ms)
+             ; ANIO: Scan rate (ms)
+
+0x101            ; CAN: Identifier for DTO CCP V1.00
+
+0x100            ; ROM: RAM/ROM offset (highbyte=RAM, lowbyte=ROM)
+             ; CAN: Identifier for CRO CCP V1.00
+.                ; Endmarker for header
+
+;CAN definitions
+;----------------------------------------------------------------------------
+DEVPARAM
+0x0000          ; Base address for binary image (.bin file)
+0x0000          ; Base address for measurement data (variables)
+0x101           ; CAN CCP V1.01+: Identifier for DTO
+0x100          ; CAN CCP V1.01+: Identifier for CRO
+0x0               ; line added for analog output control 
+0x0               ; line added for analog output control 
+0x0               ; line added for analog output control 
+0x02             ; line added for analog output control 
+.                 ; End marker rom description header
