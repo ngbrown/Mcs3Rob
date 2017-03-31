@@ -15,3 +15,156 @@ DEVPARM     ; New Description Block for 32 bit offset definition
 0,$80000    ;; 32 bit off-set into ROM image, 32 bit off-set for PROVARI address
             ;; Default = 0      , Default = Size of ROM in Bytes
 .
+
+PROVARI2    ; Start marker (2 stands for format 2)
+0           ; reserve = 0
+0           ; RAM black address offset. Use a $ to define a Hex offset.
+;Elemtyp,Bitmask(Dir'n),MCmin,MCmax,Adr,DispMod,Text,Lbl(,Unit,Formula,Dpt)
+4,0,0,1023,$0808,1,Throttle Pos,TPS,%,X/10,1
+
+; also, shorter version
+4,0,0,1023,$0808,1,Throttle Pos,TPS
+
+;Digital Values
+0,$01,0,0,$1020,2, ,CAN_Bus_Fail_b,
+
+PROCONST2   ; Start marker (2 stands for format 2)
+0           ; reserve = 0
+0           ; RAM black address offset. Use a $ to define a Hex offset.
+;Elemtyp,Bitmask(Dir'n),MCmin,MCmax,Adr,DispMod,Text,Lbl(,Unit,Formula,Dpt)
+4,0,0,2000,$1002,1,Fuel Trim,FTRIM,%,X/10,1
+
+; also, a shorter version
+4,0,0,2000,$1002,1,Fuel Trim,FTRIM
+
+;-----------------------------------------------------------------------------
+;; 2 DIMENSIONAL CHARACTERISTIC LINE
+CHARLINE2   ; Start marker
+BATF        ; Description of characteristic map
+BATPW       ; Label of characteristic map (Listing label)
+$061A       ; ROM address of characteristic map
+0           ; reserve = 0
+0           ; reserve = 0
+
+            ; *** U-Axis ***
+0           ; MC value Element type
+0           ; MC value direction: 0=normal, 1=reverse
+0           ; Minimum MC model value
+255         ; Maximum MC model value
+-1          ; ROM address graduation table (-1 = not in ROM)
+0           ; Axis direction in MC model: 0=normal, 1=reverse
+Battery     ; Full axis description
+BATV        ; Physical label abbreviation
+V           ; Unit
+X/10        ; Conversion Formula MC model -> physical
+1           ; Decimal points
+17          ; Dimension (number of values on axis)
+0           ; Graduation Table axis direction: 0=as map, 1=reverse
+0           ; reserve
+1           ; Graduation model: 0=MC model, 1=physical
+8.0 , 8.5
+9.0 , 9.5
+10.0, 10.5
+11.0, 11.5
+12.0, 12.5
+13.0, 13.5
+14.0, 14.5
+15.0, 15.5
+16.0
+.           ; End marker U-Axis
+
+            ; *** Q-Axis ***
+0           ; MC value Element type
+0           ; MC value direction: 0=normal, 1=reverse
+0           ; Definition range Minimum MC model value
+250         ; Maximum MC model value
+0           ; reserve = 0
+0           ; reserve = 0
+PW Trim     ; Full axis description
+PWADD       ; Physical label abbreviation
+msec        ; Unit
+X*2         ; Conversion Formula MC model -> physical
+3           ; Decimal points
+0           ; reserve = 0
+0           ; reserve = 0
+0           ; reserve = 0
+.           ; End market Q-Axis
+
+;-----------------------------------------------------------------------------
+;; 3 DIMENSIONAL CHARACTERISTIC MAP
+CHARMAP2    ; Start marker (2 stands for format 2)
+SPK         ; Description of characteristic map
+SPARKADV    ; Label of characteristic map (Listing label)
+$0127       ; ROM address of characteristic map
+0           ; reserve = 0
+0           ; reserve = 0
+
+            ; *** U-Axis ***
+0           ; MC value Element type
+0           ; MC value direction: 0=normal, 1=reverse
+0           ; Minimum MC model value
+255         ; Maximum MC model value
+-1          ; ROM address graduation table (-1 = not in ROM)
+0           ; Axis direction in MC model: 0=normal, 1=reverse
+EngLoad     ; Full axis description
+LOAD        ; Physical label abbreviation
+ftlbs       ; Unit
+256*X/255   ; Conversion Formula MC model -> physical
+0           ; Decimal points
+15          ; Dimension (number of values on axis)
+0           ; Graduation Table axis direction: 0=as map, 1=reverse
+0           ; reserve
+1           ; Graduation model: 0=MC model, 1=physical
+32, 48
+64, 80
+96, 112
+125, 150
+200, 210
+208, 225
+230, 240
+256
+.           ; End marker U-Axis
+
+            ; *** V-Axis ***
+0           ; MC value Element type
+0           ; MC value direction: 0=normal, 1=reverse
+0           ; Minimum MC model value
+255         ; Maximum MC model value
+-1          ; ROM address graduation table (-1 = not in ROM)
+0           ; Axis direction in MC model: 0=normal, 1=reverse
+EngSpeed    ; Full axis description
+ENGSPD      ; Physical label abbreviation
+RPM         ; Unit
+4800*X/255  ; Conversion Formula MC model -> physical
+0           ; Decimal points
+17          ; Dimension (number of values on axis)
+0           ; Graduation Table axis direction: 0=as map, 1=reverse
+0           ; reserve
+1           ; Graduation model: 0=MC model, 1=physical
+500, 750
+1000, 1250
+1500, 1750
+2000, 2250
+2500, 2750
+3000, 3250
+3500, 3750
+4000, 4250
+4500
+.           ; End marker V-Axis
+
+            ; *** Q-Axis ***
+0           ; MC value Element type
+0           ; MC value direction: 0=normal, 1=reverse
+0           ; Definition range Minimum MC model value
+255         ; Maximum MC model value
+0           ; reserve = 0
+0           ; reserve = 0
+Spark Adv   ; Full axis description
+SPK         ; Physical label abbreviation
+deg         ; Unit
+30*X/255+10 ; Conversion Formula MC model -> physical
+1           ; Decimal points
+0           ; reserve = 0
+0           ; reserve = 0
+0           ; reserve = 0
+.           ; End market Q-Axis

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using QUT.Gppg;
 
@@ -6,8 +7,9 @@ namespace Mcs3Rob
 {
     public class Parser
     {
-        public void Scan(string path)
+        public IList<string> Scan(string path)
         {
+            var scannedTokens = new List<string>();
             using (var file = File.OpenRead(path))
             {
                 var scanner = new Mcs3RobScanner(file);
@@ -17,8 +19,11 @@ namespace Mcs3Rob
                 do
                 {
                     tok = scanner.yylex();
+                    scannedTokens.Add(((Token)tok).ToString());
                 } while (tok > (int)Token.EOF);
             }
+
+            return scannedTokens;
         }
 
         public void Parse(string path)

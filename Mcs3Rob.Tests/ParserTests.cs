@@ -21,9 +21,10 @@ namespace Mcs3Rob.Tests
             string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
-            parser.Scan(fullPath);
+            var scannedTokens = parser.Scan(fullPath);
 
             Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
+            Assert.That(scannedTokens, Does.Not.Contain("SCANERROR"));
         }
 
         [Test]
