@@ -55,15 +55,10 @@ ListText        {NotComma}*
     ","         { yy_pop_state(); CountdownOrPopState(); return Make(Token.comma); }
 }
 
-<FILEHEADER, DEVPARAM>{
+<FILEHEADER, DEVPARAM, PROVARI2HEADER, PROCONST2HEADER>{
     {HexNumber}		{ GetNumber(); yy_push_state(XPEOL); return Make(Token.HEXNUMBER); }
     {Number}		{ GetNumber(); yy_push_state(XPEOL); return Make(Token.NUMBER); }
     {SizeNumber}   { GetNumber(); yy_push_state(XPEOL); return Make(Token.NUMBER); }
-}
-
-<PROVARI2HEADER, PROCONST2HEADER>{
-    {HexNumber}		{ GetNumber(); yy_push_state(XPEOL); return Make(Token.HEXNUMBER); }
-    {Number}		{ GetNumber(); yy_push_state(XPEOL); return Make(Token.NUMBER); }
 }
 
 <VARIABLELIST>{ListText}({Comma}{ListText}?){7,10}  { yy_push_state(XPEOL); return Make(Token.VARIABLELINE); }

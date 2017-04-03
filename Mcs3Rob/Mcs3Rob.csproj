@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ast.cs" />
     <Compile Include="GplexBuffers.cs" />
     <Compile Include="Mcs3RobFile.cs" />
     <Compile Include="Parser.cs" />

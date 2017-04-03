@@ -8,6 +8,8 @@ namespace Mcs3Rob
 {
     internal partial class Mcs3RobParser
     {
+        public AstFile AstFile { get; private set; }
+
         public Mcs3RobParser() : base(null) { }
 
         public void Parse(string s)

@@ -26,13 +26,15 @@ namespace Mcs3Rob
             return scannedTokens;
         }
 
-        public void Parse(string path)
+        public string Parse(string path)
         {
             using (var file = File.OpenRead(path))
             {
                 var parser = new Mcs3RobParser();
                 parser.Error += (sender, args) => Error?.Invoke(sender, args);
                 parser.Parse(file);
+
+                return parser.AstFile.ToString();
             }
         }
 

@@ -5,115 +5,128 @@
 %tokentype Token
 
 %union { 
-			public int n; 
-			public string s; 
+			public int n;
+			public string s;
+
+            public IAst ast;
+            public AstSeq astseq;
 	   }
 
 %start main
 
-%token NUMBER
-%token HEXNUMBER
-%token LINECOMMENT
-%token SPACE
 %token ENDMARKER
 %token DEVPARAM, PROCONST2, PROVARI2, CHARLINE2, CHARMAP2, CHARSPACE, ROMTEXT
 %token EOL
 %token SCANERROR
-%token TEXT
-%token VARIABLELINE
-%token GRADUATIONMODELLINE
+%token <n> NUMBER
+%token <n> HEXNUMBER
+%token <s> TEXT
+%token <s> VARIABLELINE
+%token <s> GRADUATIONMODELLINE
 
 %token comma ","
+
+%type <ast> number text HeaderItem IndependantAxisItem DependantAxisItem DescriptionBlock
+%type <ast> VariableDefinition IndependantAxis
+
+%type <astseq> HeaderItemSeq HeaderSeq FileHeader DescriptionBlockSeq VariableSeq
+%type <astseq> IndependantAxisItemSeq DependantAxisItemSeq GraduationItemSeq
 
 %%
 
 main
-    : file_header DescriptionSeq
+    : FileHeader DescriptionBlockSeq EOF { this.AstFile = new AstFile($1, $2); }
     ;
 
-DescriptionSeq
-    : DescriptionSeq DescriptionBlock
-    | DescriptionBlock
+DescriptionBlockSeq
+    : DescriptionBlock                      { $$ = new AstSeq($1); }
+    | DescriptionBlockSeq DescriptionBlock  { $$ = $1.Append($2); }
+    ;
+
+FileHeader
+    : HeaderSeq ENDMARKER EOL               { $$ = $1; }
     ;
 
 DescriptionBlock
-    : DevparamBlock
-    | error                         { ParseError(0, @1); }
-    ;
+    : DEVPARAM HeaderSeq ENDMARKER EOL 
+        { $$ = new AstDescriptionBlock("DEVPARAM", $2); }
 
-file_header
-    : HeaderSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> file_header: {0}", string.Join(", ", $1.n)); }
-    ;
+    | PROVARI2 HeaderItem EOL HeaderItem EOL VariableSeq
+        { $$ = new AstDescriptionBlock("PROVARI2", new AstSeq($2, $4), $6); }
 
-DevparamBlock
-    : DEVPARAM HeaderSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> devparam: {0}", string.Join(", ", $1.n)); }
-    | PROVARI2 HeaderItem EOL HeaderItem EOL VariableSeq { Console.Error.WriteLine("Rule -> PROVARI2: {0}", string.Join(", ", $1.n)); }
-    | PROCONST2 HeaderItem EOL HeaderItem EOL VariableSeq { Console.Error.WriteLine("Rule -> PROCONST2: {0}", string.Join(", ", $1.n)); }
-    | CHARLINE2 HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL IndependantAxis ENDMARKER EOL DependantAxisItemSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> CHARLINE2: {0}", string.Join(", ", $1.n)); }
-    | CHARMAP2 HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL IndependantAxis ENDMARKER EOL IndependantAxis ENDMARKER EOL DependantAxisItemSeq ENDMARKER EOL { Console.Error.WriteLine("Rule -> CHARMAP2: {0}", string.Join(", ", $1.n)); }
+    | PROCONST2 HeaderItem EOL HeaderItem EOL VariableSeq
+        { $$ = new AstDescriptionBlock("PROCONST2", new AstSeq($2, $4), $6); }
+
+    | CHARLINE2 HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL 
+        IndependantAxis ENDMARKER EOL DependantAxisItemSeq ENDMARKER EOL 
+        { $$ = new AstCharacteristicMapBlock("CHARLINE2", new AstSeq($2, $4, $6, $8, $10), $15, $12); }
+
+    | CHARMAP2 HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL 
+        IndependantAxis ENDMARKER EOL IndependantAxis ENDMARKER EOL DependantAxisItemSeq ENDMARKER EOL 
+        { $$ = new AstCharacteristicMapBlock("CHARMAP2", new AstSeq($2, $4, $6, $8, $10), $18, $12, $15); }
     ;
 
 HeaderSeq
-    : HeaderSeq HeaderItemSeq EOL
-    | HeaderItemSeq EOL
+    : HeaderItemSeq EOL                     { $$ = new AstSeq($1); }
+    | HeaderSeq HeaderItemSeq EOL           { $$ = $1.Append($2); }
     ;
 
 HeaderItemSeq
-    : HeaderItemSeq comma HeaderItem
-    | HeaderItem
+    : HeaderItem                            { $$ = new AstSeq($1); }
+    | HeaderItemSeq "," HeaderItem          { $$ = $1.Append($3); }
     ;
 
 HeaderItem
-    : number
-    | text
+    : number                                { $$ = $1; }
+    | text                                  { $$ = $1; }
     ;
 
 VariableSeq
-    : VariableSeq VariableDefinition EOL
-    | VariableDefinition EOL
+    : VariableDefinition EOL                { $$ = new AstSeq($1); }
+    | VariableSeq VariableDefinition EOL    { $$ = $1.Append($2); }
     ;
 
 VariableDefinition
-    : VARIABLELINE
+    : VARIABLELINE                          { $$ = new AstText($1); }
     ;
 
 IndependantAxis
-    : IndependantAxisItemSeq
-    | IndependantAxisItemSeq GraduationItemSeq
+    : IndependantAxisItemSeq                        { $$ = new AstIndependantAxis($1); }
+    | IndependantAxisItemSeq GraduationItemSeq      { $$ = new AstIndependantAxis($1, $2); }
     ;
 
 IndependantAxisItemSeq
-    : IndependantAxisItemSeq IndependantAxisItem EOL
-    | IndependantAxisItem EOL
+    : IndependantAxisItem EOL                           { $$ = new AstSeq($1); }
+    | IndependantAxisItemSeq IndependantAxisItem EOL    { $$ = $1.Append($2); }
     ;
 
 IndependantAxisItem
-    : number
-    | text
+    : number                                { $$ = $1; }
+    | text                                  { $$ = $1; }
     ;
 
 GraduationItemSeq
-    : GraduationItemSeq GRADUATIONMODELLINE EOL
-    | GRADUATIONMODELLINE EOL
+    : GRADUATIONMODELLINE EOL                       { $$ = new AstSeq(new AstText($1)); }
+    | GraduationItemSeq GRADUATIONMODELLINE EOL     { $$ = $1.Append(new AstText($2)); }
     ;
 
 DependantAxisItemSeq
-    : DependantAxisItemSeq DependantAxisItem EOL
-    | DependantAxisItem EOL
+    : DependantAxisItem EOL                         { $$ = new AstSeq($1); }
+    | DependantAxisItemSeq DependantAxisItem EOL    { $$ = $1.Append($2); }
     ;
 
 DependantAxisItem
-    : number
-    | text
-    ;
-
-number
-    : HEXNUMBER         { Console.Error.WriteLine("Rule -> hexnumber: {0}", $1.n); }
-    | NUMBER            { Console.Error.WriteLine("Rule -> number: {0}", $1.n); }
+    : number                                { $$ = $1; }
+    | text                                  { $$ = $1; }
     ;
 
 text
-    : TEXT              { Console.Error.WriteLine("Rule -> text: {0}", $1.s); }
+    : TEXT                                  { $$ = new AstText($1); }
+    ;
+
+number
+    : HEXNUMBER                             { $$ = new AstInteger($1); }
+    | NUMBER                                { $$ = new AstInteger($1); }
     ;
 
 %%
