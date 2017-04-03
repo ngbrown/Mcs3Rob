@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -162,10 +163,7 @@ namespace Mcs3Rob
 
             if (this.GraduationItems != null)
             {
-                foreach (var item in this.GraduationItems.Items)
-                {
-                    sb.AppendLine(item.ToString());
-                }
+                sb.AppendLine(this.GraduationItems.ToString());
             }
 
             sb.AppendLine(".");
@@ -196,6 +194,8 @@ namespace Mcs3Rob
             {
                 sb.AppendLine(item.ToString());
             }
+            sb.AppendLine(".");
+            sb.AppendLine();
 
             foreach (var descriptionBlock in this.DescriptionBlocks.Items)
             {
@@ -203,6 +203,116 @@ namespace Mcs3Rob
             }
 
             return sb.ToString();
+        }
+    }
+
+    internal class AstVariableLine : IAst
+    {
+        public string SourceLine { get; }
+
+        public IReadOnlyList<IAst> Items { get; }
+
+        public AstVariableLine(string line)
+        {
+            if (line == null) throw new ArgumentNullException(nameof(line));
+
+            SourceLine = line;
+            Items = ParseVariableLine(line);
+        }
+
+        private static IReadOnlyList<IAst> ParseVariableLine(string line)
+        {
+            var list = new List<IAst>();
+            var split = line.Split(new[] {','}, StringSplitOptions.None);
+
+            for (var i = 0; i < split.Length; i++)
+            {
+                var s = split[i].Trim();
+
+                switch (i)
+                {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        list.Add(ParseNumber(s));
+                        break;
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        list.Add(new AstText(s));
+                        break;
+                    case 10:
+                        list.Add(ParseNumber(s));
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Too many values in string: \"{line}\"");
+                }
+            }
+
+            return list;
+        }
+
+        private static IAst ParseNumber(string s)
+        {
+            long value;
+            bool knownHexValue;
+            if (s.StartsWith("$"))
+            {
+                knownHexValue = true;
+                value = long.Parse(s.Substring(1), NumberStyles.HexNumber);
+            }
+            else if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                knownHexValue = true;
+                value = long.Parse(s.Substring(2), NumberStyles.HexNumber);
+            }
+            else
+            {
+                knownHexValue = false;
+                value = long.Parse(s, NumberStyles.Integer);
+            }
+
+            if (knownHexValue || value > 32 && (value & (value - 1)) == 0 || value > int.MaxValue)
+            {
+                // hack to switch to hex on values that are power of 2
+                knownHexValue = true;
+                return new AstUnsigned((uint)value, knownHexValue);
+            }
+
+            return new AstInteger((int)value, knownHexValue);
+        }
+
+        public override string ToString()
+        {
+            return string.Join(", ", Items);
+        }
+    }
+
+    internal class AstGraduationSeq : AstSeq
+    {
+        public AstGraduationSeq(IEnumerable<IAst> itemList)
+            : base(itemList)
+        {
+        }
+
+        public AstGraduationSeq(string graduationLine)
+            : base(ParseGraduationLine(graduationLine))
+        {
+        }
+
+        public AstGraduationSeq Append(string graduationLine)
+        {
+            return new AstGraduationSeq(this.Items.Concat(ParseGraduationLine(graduationLine)));
+        }
+
+        private static IEnumerable<IAst> ParseGraduationLine(string graduationLine)
+        {
+            var split = graduationLine.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            return split.Select<string, IAst>(s => new AstFloat(double.Parse(s.Trim())));
         }
     }
 
@@ -226,8 +336,66 @@ namespace Mcs3Rob
     internal struct AstInteger : IAst
     {
         public int Value { get; }
+        public bool KnownHexValue { get; }
 
         public AstInteger(int value)
+            :this(value, false)
+        {
+        }
+
+        public AstInteger(int value, bool knownHexValue)
+        {
+            Value = value;
+            KnownHexValue = knownHexValue;
+        }
+
+        public override string ToString()
+        {
+            if (this.KnownHexValue)
+            {
+                return "$" + this.Value.ToString("X4");
+            }
+            else
+            {
+                return this.Value.ToString();
+            }
+        }
+    }
+
+    internal struct AstUnsigned : IAst
+    {
+        public uint Value { get; }
+        public bool KnownHexValue { get; }
+
+        public AstUnsigned(uint value)
+            : this(value, false)
+        {
+        }
+
+        public AstUnsigned(uint value, bool knownHexValue)
+        {
+            Value = value;
+            KnownHexValue = knownHexValue;
+        }
+
+        public override string ToString()
+        {
+            if (this.KnownHexValue)
+            {
+                return "$" + this.Value.ToString("X4");
+            }
+            else
+            {
+                return this.Value.ToString();
+            }
+        }
+    }
+
+    internal struct AstFloat : IAst
+    {
+        public double Value { get; }
+
+        public AstFloat(double value)
         {
             Value = value;
         }

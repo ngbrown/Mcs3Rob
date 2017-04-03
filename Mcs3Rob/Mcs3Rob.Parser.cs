@@ -27,9 +27,16 @@ namespace Mcs3Rob
             robScanner.Error += (sender, args) => Error?.Invoke(sender, args);
 
             this.Scanner = robScanner;
-            if (!this.Parse())
+            try
             {
-                OnError(new ErrorEventArgs(new ErrorContext(3, this.Scanner.yylloc)));
+                if (!this.Parse())
+                {
+                    OnError(new ErrorEventArgs(new ErrorContext(3, this.Scanner.yylloc)));
+                }
+            }
+            catch (Exception e)
+            {
+                OnError(new ErrorEventArgs(new ErrorContext(4, this.Scanner.yylloc, e)));
             }
         }
 

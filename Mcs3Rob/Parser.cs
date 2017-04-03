@@ -34,7 +34,7 @@ namespace Mcs3Rob
                 parser.Error += (sender, args) => Error?.Invoke(sender, args);
                 parser.Parse(file);
 
-                return parser.AstFile.ToString();
+                return parser.AstFile?.ToString();
             }
         }
 
@@ -71,6 +71,8 @@ namespace Mcs3Rob
 
         public string Message { get; }
 
+        public Exception Exception { get; }
+
         internal ErrorContext(int errorCode, QUT.Gppg.LexLocation lexLocation)
         {
             this.errorCode = errorCode;
@@ -87,6 +89,12 @@ namespace Mcs3Rob
             Message = string.Format("{0}({1})", GetMessage(errorCode), format);
         }
 
+        internal ErrorContext(int errorCode, LexLocation lexLocation, Exception exception)
+            : this(errorCode, lexLocation)
+        {
+            Message = string.Format("{0}({1})", GetMessage(errorCode), exception);
+        }
+
         private static string GetMessage(int errorCode)
         {
             string message;
@@ -95,6 +103,7 @@ namespace Mcs3Rob
                 case 1: message = "Fatal syntax error"; break;
                 case 2: message = "Unrecoverable scanner error"; break;
                 case 3: message = "Unrecoverable parser error"; break;
+                case 4: message = "Unrecoverable exception"; break;
                 case 79: message = "Illegal character in this context"; break;
                 default: message = $"Unknown error ({errorCode})"; break;
             }

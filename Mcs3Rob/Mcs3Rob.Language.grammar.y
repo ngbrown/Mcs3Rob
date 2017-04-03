@@ -87,7 +87,7 @@ VariableSeq
     ;
 
 VariableDefinition
-    : VARIABLELINE                          { $$ = new AstText($1); }
+    : VARIABLELINE                          { $$ = new AstVariableLine($1); }
     ;
 
 IndependantAxis
@@ -106,8 +106,8 @@ IndependantAxisItem
     ;
 
 GraduationItemSeq
-    : GRADUATIONMODELLINE EOL                       { $$ = new AstSeq(new AstText($1)); }
-    | GraduationItemSeq GRADUATIONMODELLINE EOL     { $$ = $1.Append(new AstText($2)); }
+    : GRADUATIONMODELLINE EOL                       { $$ = new AstGraduationSeq($1); }
+    | GraduationItemSeq GRADUATIONMODELLINE EOL     { $$ = ((AstGraduationSeq)$1).Append($2); }
     ;
 
 DependantAxisItemSeq
@@ -125,7 +125,7 @@ text
     ;
 
 number
-    : HEXNUMBER                             { $$ = new AstInteger($1); }
+    : HEXNUMBER                             { $$ = new AstInteger($1, true); }
     | NUMBER                                { $$ = new AstInteger($1); }
     ;
 
