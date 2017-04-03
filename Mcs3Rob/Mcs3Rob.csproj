@@ -51,11 +51,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ast.cs" />
+    <Compile Include="IAst.cs" />
+    <Compile Include="AstCharacteristicMapBlock.cs" />
+    <Compile Include="AstDescriptionBlock.cs" />
+    <Compile Include="AstFile.cs" />
+    <Compile Include="AstFloat.cs" />
+    <Compile Include="AstGraduationSeq.cs" />
+    <Compile Include="AstIndependantAxis.cs" />
+    <Compile Include="AstInteger.cs" />
+    <Compile Include="AstSeq.cs" />
+    <Compile Include="AstText.cs" />
+    <Compile Include="AstUnsigned.cs" />
+    <Compile Include="AstVariableLine.cs" />
     <Compile Include="GplexBuffers.cs" />
-    <Compile Include="Mcs3RobFile.cs" />
+    <Compile Include="RobCanDeviceParams.cs" />
+    <Compile Include="RobCharacteristicMap.cs" />
+    <Compile Include="RobCharacteristicMapHeader.cs" />
+    <Compile Include="RobCharLine2.cs" />
+    <Compile Include="RobCharMap3.cs" />
+    <Compile Include="RobCharSpace.cs" />
+    <Compile Include="RobConstants.cs" />
+    <Compile Include="RobConstantsHeader.cs" />
+    <Compile Include="RobDependantAxis.cs" />
+    <Compile Include="RobDescriptionBlock.cs" />
+    <Compile Include="RobDeviceParams.cs" />
+    <Compile Include="RobDirection.cs" />
+    <Compile Include="RobDisplayMode.cs" />
+    <Compile Include="RobElementType.cs" />
+    <Compile Include="RobFile.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RobFileHeader.cs" />
+    <Compile Include="RobHeader.cs" />
+    <Compile Include="RobIndependantAxis.cs" />
+    <Compile Include="RobParameter.cs" />
+    <Compile Include="RobRomDeviceParams.cs" />
+    <Compile Include="RobRomText.cs" />
+    <Compile Include="RobVariables.cs" />
+    <Compile Include="RobVariablesHeader.cs" />
     <Compile Include="ShiftReduceParserCode.cs" />
   </ItemGroup>
   <ItemGroup>
