@@ -4,8 +4,8 @@ namespace Mcs3Rob
     {
         public string Description { get; set; }
         public string Label { get; set; }
-        public int AddressOfMap { get; set; }
-        public int Reserve1 { get; set; }
-        public int Reserve2 { get; set; }
+        public uint AddressOfMap { get; set; }
+        public int Reserve3 { get; set; }
+        public int Reserve4 { get; set; }
     }
 }

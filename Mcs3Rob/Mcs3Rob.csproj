@@ -73,7 +73,7 @@
     <Compile Include="RobCharacteristicMap.cs" />
     <Compile Include="RobCharacteristicMapHeader.cs" />
     <Compile Include="RobCharLine2.cs" />
-    <Compile Include="RobCharMap3.cs" />
+    <Compile Include="RobCharMap2.cs" />
     <Compile Include="RobCharSpace.cs" />
     <Compile Include="RobConstants.cs" />
     <Compile Include="RobConstantsHeader.cs" />

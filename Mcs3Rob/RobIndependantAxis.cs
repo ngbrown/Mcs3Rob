@@ -6,8 +6,8 @@ namespace Mcs3Rob
     {
         public RobElementType ElementType { get; set; }
         public RobDirection ValueDirection { get; set; }
-        public int MinimumLimit { get; set; }
-        public int MaximumLimit { get; set; }
+        public long MinimumLimit { get; set; }
+        public long MaximumLimit { get; set; }
         public int AddressGraduationTable { get; set; }
         public RobDirection AxisDirection { get; set; }
         public string Description { get; set; }
@@ -17,12 +17,12 @@ namespace Mcs3Rob
         public int DecimalPlaces { get; set; }
         public int Dimension { get; set; }
         public RobDirection GraduationTableAxisDirection { get; set; }
-        public int Reserve { get; set; }
+        public int Reserve13 { get; set; }
         public int GraduationModel { get; set; }
 
         /// <summary>
         /// When the graduation table is not in ROM(-1) the values must be supplied in the definition
         /// </summary>
-        public List<int> DefinitionValues { get; set; }
+        public List<double> DefinitionValues { get; set; }
     }
 }

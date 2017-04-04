@@ -1,6 +1,6 @@
 ﻿namespace Mcs3Rob
 {
-    public class RobCharMap3 : RobCharacteristicMap
+    public class RobCharMap2 : RobCharacteristicMap
     {
         public RobIndependantAxis UAxis { get; set; }
         public RobIndependantAxis VAxis { get; set; }
