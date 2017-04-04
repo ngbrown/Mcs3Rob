@@ -153,10 +153,19 @@ namespace Mcs3Rob
                     AnalogOutput4Control = headers.ReadAsInt(7),
                 };
             }
-            else
+            else if (controlUnitType.HasFlag(RobControlUnitType.ABUS))
             {
                 throw new ParserContextErrorException(
-                    "DEVPARAM not implemented for anything but CAN, need an example file to implement more.", astDeviceParams);
+                    "DEVPARAM not implemented for ABUS, need an example file to implement more.", astDeviceParams);
+            }
+            else
+            {
+                // ROM
+                robDeviceParams = new RobRomDeviceParams()
+                {
+                    OffsetRomImage = headers.ReadAsSeq(0).ReadAsInt(0),
+                    OffsetProvariAddress = headers.ReadAsSeq(0).ReadAsInt(1),
+                };
             }
             return robDeviceParams;
         }

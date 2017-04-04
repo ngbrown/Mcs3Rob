@@ -74,6 +74,18 @@ namespace Mcs3Rob
             }
         }
 
+        public static AstSeq ReadAsSeq(this IAst ast)
+        {
+            if (ast is AstSeq)
+            {
+                return (AstSeq) ast;
+            }
+            else
+            {
+                throw new ParserContextErrorException("Expected sequence of values", ast);
+            }
+        }
+
         public static string ReadAsText(this IAst ast)
         {
             if (ast is AstText)
@@ -86,51 +98,54 @@ namespace Mcs3Rob
             }
         }
 
-        public static int ReadAsInt(this AstSeq astSeq, int index)
+        public static IAst GetAtIndex(this AstSeq astSeq, int index)
         {
             if (astSeq.Items.Count <= index)
             {
                 throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
             }
 
-            return astSeq.Items[index].ReadAsInt();
+            var item = astSeq.Items[index];
+            return item;
+        }
+
+        public static int ReadAsInt(this AstSeq astSeq, int index)
+        {
+            return astSeq.GetAtIndex(index).ReadAsInt();
         }
 
         public static uint ReadAsUInt(this AstSeq astSeq, int index)
         {
-            if (astSeq.Items.Count <= index)
-            {
-                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
-            }
-
-            return astSeq.Items[index].ReadAsUInt();
+            return astSeq.GetAtIndex(index).ReadAsUInt();
         }
 
         public static long ReadAsLong(this AstSeq astSeq, int index)
         {
-            if (astSeq.Items.Count <= index)
-            {
-                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
-            }
-
-            return astSeq.Items[index].ReadAsLong();
+            return astSeq.GetAtIndex(index).ReadAsLong();
         }
 
         public static string ReadAsText(this AstSeq astSeq, int index)
         {
-            if (astSeq.Items.Count <= index)
-            {
-                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
-            }
+            return astSeq.GetAtIndex(index).ReadAsText();
+        }
 
-            return astSeq.Items[index].ReadAsText();
+        public static AstSeq ReadAsSeq(this AstSeq astSeq, int index)
+        {
+            return astSeq.GetAtIndex(index).ReadAsSeq();
         }
 
         public static AstDescriptionBlock ReadAsAstDescriptionBlock(this AstFile astFile, string groupName)
         {
             var astDeviceParams =
                 astFile.DescriptionBlocks.Items.OfType<AstDescriptionBlock>()
-                    .Single(x => x.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+                    .SingleOrDefault(x => x.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+
+            if (astDeviceParams == null)
+            {
+                throw new ParserContextErrorException(
+                    $"Could not find Description Block with group name of \"{groupName}\"");
+            }
+
             return astDeviceParams;
         }
 
