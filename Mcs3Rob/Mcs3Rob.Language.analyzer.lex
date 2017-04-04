@@ -63,11 +63,11 @@ ListText        {NotComma}*
 
 <VARIABLELIST>{ListText}({Comma}{ListText}?){7,10}  { yy_push_state(XPEOL); return Make(Token.VARIABLELINE); }
 
-<CHARLINE2HEADER, CHARMAP2HEADER, CHARSPACEHEADER, UAXIS, VAXIS, WAXIS, QAXIS>{
+<CHARLINE2HEADER, CHARMAP2HEADER, CHARSPACEHEADER, UAXIS, VAXIS, WAXIS, QAXIS, ROMTEXT>{
     {CharLine}      { this.charHeaderToken = GetCharHeader(); yy_push_state(XPEOL); return Make(this.charHeaderToken); }
 }
 
-<FILEHEADER, DEVPARAM, UAXIS, VAXIS, WAXIS, QAXIS>{
+<FILEHEADER, DEVPARAM, UAXIS, VAXIS, WAXIS, QAXIS, ROMTEXT>{
     {EndMarker}     { yy_pop_state(); yy_push_state(XPEOL); return Make(Token.ENDMARKER); }
 }
 
@@ -122,6 +122,12 @@ ListText        {NotComma}*
         yy_push_state(CHARSPACEHEADER);
         StartCountdown(5);
         return Make(Token.CHARSPACE);
+    }
+
+    ^"ROMTEXT" {
+        yy_clear_stack();
+        yy_push_state(ROMTEXT);
+        return Make(Token.ROMTEXT);
     }
 }
 

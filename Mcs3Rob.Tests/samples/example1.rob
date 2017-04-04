@@ -168,3 +168,12 @@ deg         ; Unit
 0           ; reserve = 0
 0           ; reserve = 0
 .           ; End market Q-Axis
+
+
+ROMTEXT
+Calibration_Part_Number   ;Description
+Calibration_Part_Number   ;Label, must be unique
+$4018       ;Base ROM address for text storage
+2           ;Text type
+12          ;max length
+.           ;End marker

@@ -63,6 +63,7 @@ namespace Mcs3Rob
                         Constants = ReadRobConstants(astFile),
                         Variables = ReadRobVariables(astFile),
                         CharacteristicMaps = ReadCharacteristicMaps(astFile),
+                        RomTexts = ReadRomTexts(astFile),
                     };
 
                 }
@@ -354,6 +355,29 @@ namespace Mcs3Rob
                         astIndependantAxis.GraduationItems?.Items.Cast<AstFloat>().Select(x => x.Value).ToList(),
                 };
             }
+        }
+
+        private static List<RobRomText> ReadRomTexts(AstFile astFile)
+        {
+            var result = new List<RobRomText>();
+            var romTextBlocks =
+                astFile.DescriptionBlocks.Items.Cast<AstDescriptionBlock>()
+                    .Where(x => x.GroupName.Equals("ROMTEXT", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var source in romTextBlocks)
+            {
+                var headers = source.Headers;
+                result.Add(new RobRomText()
+                {
+                    Description = headers.ReadAsText(0),
+                    Label = headers.ReadAsText(1),
+                    Address = headers.ReadAsInt(2),
+                    TextType = headers.ReadAsInt(3),
+                    MaxLength = headers.ReadAsInt(4),
+                });
+            }
+            
+            return result;
         }
     }
 }

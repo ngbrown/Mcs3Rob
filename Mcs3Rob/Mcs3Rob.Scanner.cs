@@ -144,6 +144,17 @@ namespace Mcs3Rob
                         return Token.GRADUATIONMODELLINE;
                 }
             }
+            else if (YY_START == ROMTEXT)
+            {
+                switch (charHeaderCount++)
+                {
+                    case 0: return GetString(); // Description
+                    case 1: return GetString(); // Label in Gredi, must be unique
+                    case 2: return GetNumber(); // Base ROM address for text storage
+                    case 3: return GetNumber(); // Text type
+                    case 4: return GetNumber(); // max length
+                }
+            }
 
             return Token.SCANERROR;
         }

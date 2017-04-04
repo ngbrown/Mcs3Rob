@@ -64,6 +64,9 @@ DescriptionBlock
     | CHARMAP2 HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL HeaderItem EOL 
         IndependantAxis ENDMARKER EOL IndependantAxis ENDMARKER EOL DependantAxisItemSeq ENDMARKER EOL 
         { $$ = new AstCharacteristicMapBlock(@1, "CHARMAP2", new AstSeq(@2, $2, $4, $6, $8, $10), $18, $12, $15); }
+
+    | ROMTEXT HeaderSeq ENDMARKER EOL
+        { $$ = new AstDescriptionBlock(@1, "ROMTEXT", $2); }
     ;
 
 HeaderSeq
