@@ -6,10 +6,7 @@ namespace Mcs3Rob
     public class ErrorContext
     {
         private readonly int errorCode;
-        public int StartLine { get; }
-        public int StartColumn { get; }
-        public int EndLine { get; }
-        public int EndColumn { get; }
+        public ParserLocation ParserLocation { get; }
 
         public string Message { get; }
 
@@ -19,10 +16,7 @@ namespace Mcs3Rob
         {
             this.errorCode = errorCode;
             Message = GetMessage(errorCode);
-            this.StartLine = lexLocation.StartLine;
-            this.StartColumn = lexLocation.StartColumn;
-            this.EndLine = lexLocation.EndLine;
-            this.EndColumn = lexLocation.EndColumn;
+            this.ParserLocation = new ParserLocation(lexLocation);
         }
 
         internal ErrorContext(int errorCode, LexLocation lexLocation, string format)
@@ -34,7 +28,20 @@ namespace Mcs3Rob
         internal ErrorContext(int errorCode, LexLocation lexLocation, Exception exception)
             : this(errorCode, lexLocation)
         {
+            Exception = exception;
             Message = string.Format("{0}({1})", GetMessage(errorCode), exception);
+        }
+
+        internal ErrorContext(int errorCode, Exception exception)
+        {
+            this.errorCode = errorCode;
+            Message = string.Format("{0}({1})", GetMessage(errorCode), exception);
+
+            var contextErrorException = exception as ParserContextErrorException;
+            if (contextErrorException != null)
+            {
+                this.ParserLocation = contextErrorException.Location;
+            }
         }
 
         private static string GetMessage(int errorCode)
@@ -46,6 +53,7 @@ namespace Mcs3Rob
                 case 2: message = "Unrecoverable scanner error"; break;
                 case 3: message = "Unrecoverable parser error"; break;
                 case 4: message = "Unrecoverable exception"; break;
+                case 5: message = "Unable to consume AST into ROB entity structure"; break;
                 case 79: message = "Illegal character in this context"; break;
                 default: message = $"Unknown error ({errorCode})"; break;
             }
@@ -56,7 +64,7 @@ namespace Mcs3Rob
         public override string ToString()
         {
             string fileName = "SourceFile.rob";
-            return $"{fileName}({StartLine}, {StartColumn}, {EndLine}, {EndColumn}) : error P{errorCode:D4} : {Message}";
+            return $"{fileName}{this.ParserLocation} : error P{errorCode:D4} : {Message}";
         }
     }
 }

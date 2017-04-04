@@ -66,8 +66,9 @@
     <Compile Include="AstUnsigned.cs" />
     <Compile Include="AstVariableLine.cs" />
     <Compile Include="GplexBuffers.cs" />
-    <Compile Include="ParserContextError.cs" />
+    <Compile Include="ParserContextErrorException.cs" />
     <Compile Include="ParserHelper.cs" />
+    <Compile Include="ParserLocation.cs" />
     <Compile Include="RobCanDeviceParams.cs" />
     <Compile Include="RobCharacteristicMap.cs" />
     <Compile Include="RobCharacteristicMapHeader.cs" />

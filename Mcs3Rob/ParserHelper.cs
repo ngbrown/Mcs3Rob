@@ -12,7 +12,7 @@ namespace Mcs3Rob
                 long signed = ((AstInteger) ast).Value;
                 if (signed > Int32.MaxValue || signed < Int32.MinValue)
                 {
-                    throw new ParserContextError("Number to big for target integer field.");
+                    throw new ParserContextErrorException("Number to big for target integer field.", ast);
                 }
 
                 return (int)signed;
@@ -22,14 +22,14 @@ namespace Mcs3Rob
                 uint unsigned = ((AstUnsigned) ast).Value;
                 if ((long) unsigned > Int32.MaxValue)
                 {
-                    throw new ParserContextError("Number to big for target integer field.");
+                    throw new ParserContextErrorException("Number to big for target integer field.", ast);
                 }
 
                 return (int) unsigned;
             }
             else
             {
-                throw new ParserContextError("Expected an integer");
+                throw new ParserContextErrorException("Expected an integer", ast);
             }
         }
 
@@ -45,7 +45,7 @@ namespace Mcs3Rob
             }
             else
             {
-                throw new ParserContextError("Expected an integer");
+                throw new ParserContextErrorException("Expected an integer", ast);
             }
         }
 
@@ -56,11 +56,11 @@ namespace Mcs3Rob
                 long signed = ((AstInteger) ast).Value;
                 if (signed < 0)
                 {
-                    throw new ParserContextError("Number is negative and won't convert to unsigned.");
+                    throw new ParserContextErrorException("Number is negative and won't convert to unsigned.", ast);
                 }
                 if (signed > UInt32.MaxValue || signed < UInt32.MinValue)
                 {
-                    throw new ParserContextError("Number to big for target integer field.");
+                    throw new ParserContextErrorException("Number to big for target integer field.", ast);
                 }
                 return (uint)signed;
             }
@@ -70,7 +70,7 @@ namespace Mcs3Rob
             }
             else
             {
-                throw new ParserContextError("Expected an signed/unsigned integer");
+                throw new ParserContextErrorException("Expected an signed/unsigned integer", ast);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Mcs3Rob
             }
             else
             {
-                throw new ParserContextError($"Expected a string but was {ast.GetType()}");
+                throw new ParserContextErrorException($"Expected a string but was {ast.GetType()}", ast);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Mcs3Rob
         {
             if (astSeq.Items.Count <= index)
             {
-                throw new ParserContextError("Expected another entry. List too short.");
+                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
             }
 
             return astSeq.Items[index].ReadAsInt();
@@ -100,7 +100,7 @@ namespace Mcs3Rob
         {
             if (astSeq.Items.Count <= index)
             {
-                throw new ParserContextError("Expected another entry. List too short.");
+                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
             }
 
             return astSeq.Items[index].ReadAsUInt();
@@ -110,7 +110,7 @@ namespace Mcs3Rob
         {
             if (astSeq.Items.Count <= index)
             {
-                throw new ParserContextError("Expected another entry. List too short.");
+                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
             }
 
             return astSeq.Items[index].ReadAsLong();
@@ -120,7 +120,7 @@ namespace Mcs3Rob
         {
             if (astSeq.Items.Count <= index)
             {
-                throw new ParserContextError("Expected another entry. List too short.");
+                throw new ParserContextErrorException("Expected another entry. List too short.", astSeq);
             }
 
             return astSeq.Items[index].ReadAsText();

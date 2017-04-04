@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
@@ -10,8 +11,8 @@ namespace Mcs3Rob
         public IReadOnlyList<AstIndependantAxis> IndependantAxis { get; }
         public AstSeq DependantAxis { get; }
 
-        public AstCharacteristicMapBlock(string groupName, AstSeq headers, AstSeq dependantAxis, params IAst[] independantAxis)
-            : base(groupName, headers, null)
+        public AstCharacteristicMapBlock(LexLocation lexLocation, string groupName, AstSeq headers, AstSeq dependantAxis, params IAst[] independantAxis)
+            : base(lexLocation, groupName, headers, null)
         {
             if (independantAxis == null) throw new ArgumentNullException(nameof(independantAxis));
             if (dependantAxis == null) throw new ArgumentNullException(nameof(dependantAxis));

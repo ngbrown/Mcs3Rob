@@ -54,6 +54,7 @@ namespace Mcs3Rob.Tests
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             var robFile = parser.Read(fullPath);
 
+            Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
             Assert.That(robFile, Is.Not.Null);
         }
     }

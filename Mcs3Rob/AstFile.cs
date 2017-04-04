@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
@@ -7,12 +8,14 @@ namespace Mcs3Rob
     {
         public AstSeq FileHeader { get; }
         public AstSeq DescriptionBlocks { get; }
+        public LexLocation LexLocation { get; }
 
-        public AstFile(AstSeq fileHeader, AstSeq descriptionBlocks)
+        public AstFile(LexLocation lexLocation, AstSeq fileHeader, AstSeq descriptionBlocks)
         {
             if (fileHeader == null) throw new ArgumentNullException(nameof(fileHeader));
             if (descriptionBlocks == null) throw new ArgumentNullException(nameof(descriptionBlocks));
 
+            LexLocation = lexLocation;
             FileHeader = fileHeader;
             DescriptionBlocks = descriptionBlocks;
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
@@ -7,11 +8,13 @@ namespace Mcs3Rob
     {
         public AstSeq AxisHeader { get; }
         public AstSeq GraduationItems { get; }
+        public LexLocation LexLocation { get; }
 
-        public AstIndependantAxis(AstSeq axisHeader, AstSeq graduationItems = null)
+        public AstIndependantAxis(LexLocation lexLocation, AstSeq axisHeader, AstSeq graduationItems = null)
         {
             if (axisHeader == null) throw new ArgumentNullException(nameof(axisHeader));
 
+            LexLocation = lexLocation;
             AxisHeader = axisHeader;
             GraduationItems = graduationItems;
         }

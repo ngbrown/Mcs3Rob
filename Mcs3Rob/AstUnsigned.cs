@@ -1,17 +1,21 @@
+using QUT.Gppg;
+
 namespace Mcs3Rob
 {
     internal struct AstUnsigned : IAst
     {
         public uint Value { get; }
         public bool KnownHexValue { get; }
+        public LexLocation LexLocation { get; }
 
-        public AstUnsigned(uint value)
-            : this(value, false)
+        public AstUnsigned(LexLocation lexLocation, uint value)
+            : this(lexLocation, value, false)
         {
         }
 
-        public AstUnsigned(uint value, bool knownHexValue)
+        public AstUnsigned(LexLocation lexLocation, uint value, bool knownHexValue)
         {
+            LexLocation = lexLocation;
             Value = value;
             KnownHexValue = knownHexValue;
         }

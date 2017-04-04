@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
     internal class AstSeq : IAst
     {
         public IReadOnlyList<IAst> Items { get; }
+        public LexLocation LexLocation { get; }
 
-        public AstSeq(IAst firstItem)
+        public AstSeq(LexLocation lexLocation, IAst firstItem)
         {
             if (firstItem == null) throw new ArgumentNullException(nameof(firstItem));
 
@@ -18,18 +20,19 @@ namespace Mcs3Rob
                 firstItem = itemList.Items[0];
             }
 
+            LexLocation = lexLocation;
             Items = new List<IAst>() {firstItem};
         }
 
-        public AstSeq(IEnumerable<IAst> itemList)
+        public AstSeq(LexLocation lexLocation, IEnumerable<IAst> itemList)
         {
             if (itemList == null) throw new ArgumentNullException(nameof(itemList));
 
             Items = new List<IAst>(itemList);
         }
 
-        public AstSeq(params IAst[] items)
-            : this((IEnumerable<IAst>)items)
+        public AstSeq(LexLocation lexLocation, params IAst[] items)
+            : this(lexLocation, (IEnumerable<IAst>)items)
         {
         }
 
@@ -43,7 +46,7 @@ namespace Mcs3Rob
                 newItem = itemList.Items[0];
             }
 
-            return new AstSeq(Items.Concat(new[] {newItem}));
+            return new AstSeq(LexLocation, Items.Concat(new[] {newItem}));
         }
 
         public override string ToString()

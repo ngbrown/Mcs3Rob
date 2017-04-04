@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using QUT.Gppg;
 
 namespace Mcs3Rob
 {
@@ -8,15 +9,15 @@ namespace Mcs3Rob
     {
         public string SourceLine { get; }
 
-        public AstVariableLine(string line)
-            : base(ParseVariableLine(line))
+        public AstVariableLine(LexLocation lexLocation, string line)
+            : base(lexLocation, ParseVariableLine(lexLocation, line))
         {
             if (line == null) throw new ArgumentNullException(nameof(line));
 
             SourceLine = line;
         }
 
-        private static IReadOnlyList<IAst> ParseVariableLine(string line)
+        private static IReadOnlyList<IAst> ParseVariableLine(LexLocation lexLocation, string line)
         {
             var list = new List<IAst>();
             var split = line.Split(new[] {','}, StringSplitOptions.None);
@@ -33,16 +34,16 @@ namespace Mcs3Rob
                     case 3:
                     case 4:
                     case 5:
-                        list.Add(ParseNumber(s));
+                        list.Add(ParseNumber(lexLocation, s));
                         break;
                     case 6:
                     case 7:
                     case 8:
                     case 9:
-                        list.Add(new AstText(s));
+                        list.Add(new AstText(lexLocation, s));
                         break;
                     case 10:
-                        list.Add(ParseNumber(s));
+                        list.Add(ParseNumber(lexLocation, s));
                         break;
                     default:
                         throw new InvalidOperationException($"Too many values in string: \"{line}\"");
@@ -52,7 +53,7 @@ namespace Mcs3Rob
             return list;
         }
 
-        private static IAst ParseNumber(string s)
+        private static IAst ParseNumber(LexLocation lexLocation, string s)
         {
             long value;
             bool knownHexValue;
@@ -76,10 +77,10 @@ namespace Mcs3Rob
             {
                 // hack to switch to hex on values that are power of 2
                 knownHexValue = true;
-                return new AstUnsigned((uint)value, knownHexValue);
+                return new AstUnsigned(lexLocation, (uint)value, knownHexValue);
             }
 
-            return new AstInteger((int)value, knownHexValue);
+            return new AstInteger(lexLocation, (int)value, knownHexValue);
         }
 
         public override string ToString()

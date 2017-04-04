@@ -1,17 +1,21 @@
+using QUT.Gppg;
+
 namespace Mcs3Rob
 {
     internal struct AstInteger : IAst
     {
         public long Value { get; }
         public bool KnownHexValue { get; }
+        public LexLocation LexLocation { get; }
 
-        public AstInteger(long value)
-            :this(value, false)
+        public AstInteger(LexLocation lexLocation, long value)
+            :this(lexLocation, value, false)
         {
         }
 
-        public AstInteger(long value, bool knownHexValue)
+        public AstInteger(LexLocation lexLocation, long value, bool knownHexValue)
         {
+            LexLocation = lexLocation;
             Value = value;
             KnownHexValue = knownHexValue;
         }

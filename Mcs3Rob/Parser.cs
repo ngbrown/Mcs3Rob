@@ -51,19 +51,28 @@ namespace Mcs3Rob
                     return null;
                 }
 
-                var astFile = parser.AstFile;
-                var robFileHeader = ReadRobFileHeader(astFile.FileHeader);
-
-                return new RobFile()
+                try
                 {
-                    FileHeader = robFileHeader,
-                    DeviceParams = ReadRobDeviceParams(astFile, robFileHeader.ControlUnitType),
-                    Constants = ReadRobConstants(astFile),
-                };
+                    var astFile = parser.AstFile;
+                    var robFileHeader = ReadRobFileHeader(astFile.FileHeader);
+
+                    return new RobFile()
+                    {
+                        FileHeader = robFileHeader,
+                        DeviceParams = ReadRobDeviceParams(astFile, robFileHeader.ControlUnitType),
+                        Constants = ReadRobConstants(astFile),
+                    };
+
+                }
+                catch (Exception e)
+                {
+                    this.OnError(new ErrorEventArgs(new ErrorContext(5, e)));
+                    return null;
+                }
             }
         }
 
-        public virtual event EventHandler<Mcs3Rob.ErrorEventArgs> Error;
+        public virtual event EventHandler<ErrorEventArgs> Error;
 
         protected virtual void OnError(ErrorEventArgs e)
         {
@@ -146,8 +155,8 @@ namespace Mcs3Rob
             }
             else
             {
-                throw new ParserContextError(
-                    "DEVPARAM not implemented for anything but CAN, need an example file to implement more.");
+                throw new ParserContextErrorException(
+                    "DEVPARAM not implemented for anything but CAN, need an example file to implement more.", astDeviceParams);
             }
             return robDeviceParams;
         }
