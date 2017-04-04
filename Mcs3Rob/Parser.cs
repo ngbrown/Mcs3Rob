@@ -250,9 +250,7 @@ namespace Mcs3Rob
         {
             var results = new List<RobCharacteristicMap>();
 
-            var astCharline =
-                astFile.DescriptionBlocks.Items.OfType<AstCharacteristicMapBlock>()
-                    .Where(x => x.GroupName.Equals("CHARLINE2", StringComparison.OrdinalIgnoreCase));
+            var astCharline = astFile.DescriptionBlocks.Items.OfType<AstCharacteristicMapBlock>();
 
             foreach (var descriptionBlock in astCharline)
             {
