@@ -10,8 +10,8 @@ namespace Mcs3Rob
         public IReadOnlyList<AstIndependantAxis> IndependantAxis { get; }
         public AstSeq DependantAxis { get; }
 
-        public AstCharacteristicMapBlock(string type, AstSeq headers, AstSeq dependantAxis, params IAst[] independantAxis)
-            : base(type, headers, null)
+        public AstCharacteristicMapBlock(string groupName, AstSeq headers, AstSeq dependantAxis, params IAst[] independantAxis)
+            : base(groupName, headers, null)
         {
             if (independantAxis == null) throw new ArgumentNullException(nameof(independantAxis));
             if (dependantAxis == null) throw new ArgumentNullException(nameof(dependantAxis));
@@ -23,7 +23,7 @@ namespace Mcs3Rob
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.Type);
+            sb.AppendLine(this.GroupName);
             foreach (var header in this.Headers.Items)
             {
                 sb.AppendLine(header.ToString());

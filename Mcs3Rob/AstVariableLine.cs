@@ -4,18 +4,16 @@ using System.Globalization;
 
 namespace Mcs3Rob
 {
-    internal class AstVariableLine : IAst
+    internal class AstVariableLine : AstSeq
     {
         public string SourceLine { get; }
 
-        public IReadOnlyList<IAst> Items { get; }
-
         public AstVariableLine(string line)
+            : base(ParseVariableLine(line))
         {
             if (line == null) throw new ArgumentNullException(nameof(line));
 
             SourceLine = line;
-            Items = ParseVariableLine(line);
         }
 
         private static IReadOnlyList<IAst> ParseVariableLine(string line)

@@ -21,7 +21,7 @@ namespace Mcs3Rob.Tests
             string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
-            var scannedTokens = parser.Scan(fullPath);
+            var scannedTokens = parser.ScanTokens(fullPath);
 
             Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
             Assert.That(scannedTokens, Does.Not.Contain("SCANERROR"));
@@ -37,9 +37,24 @@ namespace Mcs3Rob.Tests
             string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
-            Console.Write(parser.Parse(fullPath));
+            Console.Write(parser.ParseAst(fullPath));
 
             Assert.That(errorList, Is.Empty, string.Join("\r\n", errorList.Select(x => x.Item2.ToString())));
+        }
+
+        [Test]
+        [TestCase("example1.rob")]
+        [TestCase("example2.rob")]
+        public void ReadRobFile(string fileName)
+        {
+            var errorList = new List<Tuple<object, ErrorEventArgs>>();
+
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
+            var parser = new Mcs3Rob.Parser();
+            parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
+            var robFile = parser.Read(fullPath);
+
+            Assert.That(robFile, Is.Not.Null);
         }
     }
 }

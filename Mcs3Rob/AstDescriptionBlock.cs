@@ -5,16 +5,16 @@ namespace Mcs3Rob
 {
     internal class AstDescriptionBlock : IAst
     {
-        public string Type { get; }
+        public string GroupName { get; }
         public AstSeq Variables { get; }
         public AstSeq Headers { get; }
 
-        public AstDescriptionBlock(string type, AstSeq headers, AstSeq variables = null)
+        public AstDescriptionBlock(string groupName, AstSeq headers, AstSeq variables = null)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (groupName == null) throw new ArgumentNullException(nameof(groupName));
             if (headers == null) throw new ArgumentNullException(nameof(headers));
 
-            Type = type;
+            GroupName = groupName;
             Variables = variables;
             Headers = headers;
         }
@@ -22,7 +22,7 @@ namespace Mcs3Rob
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.Type);
+            sb.AppendLine(this.GroupName);
             foreach (var header in this.Headers.Items)
             {
                 sb.AppendLine(header.ToString());

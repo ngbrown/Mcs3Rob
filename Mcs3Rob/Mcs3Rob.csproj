@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorContext.cs" />
+    <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="IAst.cs" />
     <Compile Include="AstCharacteristicMapBlock.cs" />
     <Compile Include="AstDescriptionBlock.cs" />
@@ -64,6 +66,8 @@
     <Compile Include="AstUnsigned.cs" />
     <Compile Include="AstVariableLine.cs" />
     <Compile Include="GplexBuffers.cs" />
+    <Compile Include="ParserContextError.cs" />
+    <Compile Include="ParserHelper.cs" />
     <Compile Include="RobCanDeviceParams.cs" />
     <Compile Include="RobCharacteristicMap.cs" />
     <Compile Include="RobCharacteristicMapHeader.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="RobCharSpace.cs" />
     <Compile Include="RobConstants.cs" />
     <Compile Include="RobConstantsHeader.cs" />
+    <Compile Include="RobControlUnitType.cs" />
     <Compile Include="RobDependantAxis.cs" />
     <Compile Include="RobDescriptionBlock.cs" />
     <Compile Include="RobDeviceParams.cs" />

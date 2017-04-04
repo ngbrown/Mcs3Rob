@@ -5,7 +5,7 @@
 %tokentype Token
 
 %union { 
-			public int n;
+			public long n;
 			public string s;
 
             public IAst ast;

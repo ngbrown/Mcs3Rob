@@ -2,15 +2,15 @@ namespace Mcs3Rob
 {
     internal struct AstInteger : IAst
     {
-        public int Value { get; }
+        public long Value { get; }
         public bool KnownHexValue { get; }
 
-        public AstInteger(int value)
+        public AstInteger(long value)
             :this(value, false)
         {
         }
 
-        public AstInteger(int value, bool knownHexValue)
+        public AstInteger(long value, bool knownHexValue)
         {
             Value = value;
             KnownHexValue = knownHexValue;

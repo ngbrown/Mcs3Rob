@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using QUT.Gppg;
+using System.Linq;
 
 namespace Mcs3Rob
 {
     public class Parser
     {
-        public IList<string> Scan(string path)
+        public IList<string> ScanTokens(string path)
         {
             var scannedTokens = new List<string>();
             using (var file = File.OpenRead(path))
@@ -26,7 +26,7 @@ namespace Mcs3Rob
             return scannedTokens;
         }
 
-        public string Parse(string path)
+        public string ParseAst(string path)
         {
             using (var file = File.OpenRead(path))
             {
@@ -38,83 +38,168 @@ namespace Mcs3Rob
             }
         }
 
+        public RobFile Read(string path)
+        {
+            using (var file = File.OpenRead(path))
+            {
+                var parser = new Mcs3RobParser();
+                parser.Error += (sender, args) => Error?.Invoke(sender, args);
+                parser.Parse(file);
+
+                if (parser.AstFile == null)
+                {
+                    return null;
+                }
+
+                var astFile = parser.AstFile;
+                var robFileHeader = ReadRobFileHeader(astFile.FileHeader);
+
+                return new RobFile()
+                {
+                    FileHeader = robFileHeader,
+                    DeviceParams = ReadRobDeviceParams(astFile, robFileHeader.ControlUnitType),
+                    Constants = ReadRobConstants(astFile),
+                };
+            }
+        }
+
         public virtual event EventHandler<Mcs3Rob.ErrorEventArgs> Error;
 
         protected virtual void OnError(ErrorEventArgs e)
         {
             Error?.Invoke(this, e);
         }
-    }
 
-    public class ErrorEventArgs : EventArgs
-    {
-        public ErrorEventArgs(ErrorContext errorContext)
+        private static RobConstants ReadRobConstants(AstFile astFile)
         {
-            this.Context = errorContext;
-        }
+            var astConstants = astFile.ReadAsAstDescriptionBlock("PROCONST2");
+            var parameters =
+                astConstants.Variables.Items.Cast<AstSeq>().Select(variable =>
+                {
+                    var item1 = variable.Items[1];
+                    var item1KnownHexValue = item1.IsKnownHexValue();
 
-        public ErrorContext Context { get; }
+                    var robParameter = new RobParameter
+                    {
+                        ElementType = (RobElementType) variable.ReadAsUInt(0),
+                        Bitmask = item1KnownHexValue ? new uint?(item1.ReadAsUInt()) : null,
+                        Direction = item1KnownHexValue ? null : (RobDirection?)item1.ReadAsInt(),
+                        MinimumLimit = variable.ReadAsLong(2),
+                        MaximumLimit = variable.ReadAsLong(3),
+                        Address = variable.ReadAsUInt(4),
+                        DisplayMode = (RobDisplayMode)variable.ReadAsInt(5),
+                        Description = variable.ReadAsText(6),
+                        VariableName = variable.ReadAsText(7),
+                    };
 
-        public override string ToString()
-        {
-            return this.Context.ToString();
-        }
-    }
+                    if (variable.Items.Count > 8)
+                    {
+                        robParameter.EngineeringUnit = variable.ReadAsText(8);
+                    }
 
-    public class ErrorContext
-    {
-        private readonly int errorCode;
-        public int StartLine { get; }
-        public int StartColumn { get; }
-        public int EndLine { get; }
-        public int EndColumn { get; }
+                    if (variable.Items.Count > 9)
+                    {
+                        robParameter.ConversionEquation = variable.ReadAsText(9);
+                    }
 
-        public string Message { get; }
+                    if (variable.Items.Count > 10)
+                    {
+                        robParameter.DecimalPlaces = variable.ReadAsInt(10);
+                    }
 
-        public Exception Exception { get; }
+                    return robParameter;
+                }).ToList();
 
-        internal ErrorContext(int errorCode, QUT.Gppg.LexLocation lexLocation)
-        {
-            this.errorCode = errorCode;
-            Message = GetMessage(errorCode);
-            this.StartLine = lexLocation.StartLine;
-            this.StartColumn = lexLocation.StartColumn;
-            this.EndLine = lexLocation.EndLine;
-            this.EndColumn = lexLocation.EndColumn;
-        }
-
-        internal ErrorContext(int errorCode, LexLocation lexLocation, string format)
-            : this(errorCode, lexLocation)
-        {
-            Message = string.Format("{0}({1})", GetMessage(errorCode), format);
-        }
-
-        internal ErrorContext(int errorCode, LexLocation lexLocation, Exception exception)
-            : this(errorCode, lexLocation)
-        {
-            Message = string.Format("{0}({1})", GetMessage(errorCode), exception);
-        }
-
-        private static string GetMessage(int errorCode)
-        {
-            string message;
-            switch (errorCode)
+            var robConstants = new RobConstants()
             {
-                case 1: message = "Fatal syntax error"; break;
-                case 2: message = "Unrecoverable scanner error"; break;
-                case 3: message = "Unrecoverable parser error"; break;
-                case 4: message = "Unrecoverable exception"; break;
-                case 79: message = "Illegal character in this context"; break;
-                default: message = $"Unknown error ({errorCode})"; break;
-            }
+                Header = new RobConstantsHeader()
+                {
+                    Reserved0 = astConstants.Headers.ReadAsInt(0),
+                    RamBlockAddressOffset = astConstants.Headers.ReadAsInt(1),
+                },
+                Parameters = parameters,
+            };
 
-            return message;
+            return robConstants;
         }
 
-        public override string ToString()
+        private static RobDeviceParams ReadRobDeviceParams(AstFile astFile, RobControlUnitType controlUnitType)
         {
-            string fileName = "SourceFile.rob";
-            return $"{fileName}({StartLine}, {StartColumn}, {EndLine}, {EndColumn}) : error P{errorCode:D4} : {Message}";
+            var astDeviceParams = astFile.ReadAsAstDescriptionBlock("DEVPARAM");
+
+            RobDeviceParams robDeviceParams;
+            var headers = astDeviceParams.Headers;
+            if (controlUnitType.HasFlag(RobControlUnitType.CAN))
+            {
+                // DEVPARAM layout seems to depend on the control unit type
+                robDeviceParams = new RobCanDeviceParams()
+                {
+                    BaseAddressBinaryImage = headers.ReadAsUInt(0),
+                    BaseAddressMeasurementData = headers.ReadAsUInt(1),
+                    CanCcpIdentifierDto = headers.ReadAsInt(2),
+                    CanCcpIdentifierCro = headers.ReadAsInt(3),
+                    AnalogOutput1Control = headers.ReadAsInt(4),
+                    AnalogOutput2Control = headers.ReadAsInt(5),
+                    AnalogOutput3Control = headers.ReadAsInt(6),
+                    AnalogOutput4Control = headers.ReadAsInt(7),
+                };
+            }
+            else
+            {
+                throw new ParserContextError(
+                    "DEVPARAM not implemented for anything but CAN, need an example file to implement more.");
+            }
+            return robDeviceParams;
+        }
+
+        private static RobFileHeader ReadRobFileHeader(AstSeq astFileHeader)
+        {
+            var robControlUnitType = (RobControlUnitType) astFileHeader.ReadAsInt(2);
+            RobFileHeader robFileHeader;
+
+            if (robControlUnitType.HasFlag(RobControlUnitType.CAN))
+            {
+                robFileHeader = new RobFileHeaderCan()
+                {
+                    EmulationModuleNumber = astFileHeader.ReadAsInt(0),
+                    RomSize = astFileHeader.ReadAsInt(1),
+                    ControlUnitType = robControlUnitType,
+                    CanBusFrequency = astFileHeader.ReadAsInt(3),
+                    CanEcuNodeId = astFileHeader.ReadAsInt(4),
+                    CanDefaultSamplingInterval = astFileHeader.ReadAsInt(5),
+                    CanIdentifierDtoCcp = astFileHeader.ReadAsInt(6),
+                    CanIdentifierCroCcp = astFileHeader.ReadAsInt(7),
+                };
+            }
+            else if (robControlUnitType.HasFlag(RobControlUnitType.ABUS))
+            {
+                robFileHeader = new RobFileHeaderAnio()
+                {
+                    EmulationModuleNumber = astFileHeader.ReadAsInt(0),
+                    RomSize = astFileHeader.ReadAsInt(1),
+                    ControlUnitType = robControlUnitType,
+                    AnioSignalAveragingTime = astFileHeader.ReadAsInt(3),
+                    AnioReserved4 = astFileHeader.ReadAsInt(4),
+                    AnioScanRate = astFileHeader.ReadAsInt(5),
+                    AnioReserved6 = astFileHeader.ReadAsInt(6),
+                    AnioReserved7 = astFileHeader.ReadAsInt(7),
+                };
+            }
+            else
+            {
+                robFileHeader = new RobFileHeaderRom()
+                {
+                    EmulationModuleNumber = astFileHeader.ReadAsInt(0),
+                    RomSize = astFileHeader.ReadAsInt(1),
+                    ControlUnitType = robControlUnitType,
+                    RomCycleTriggerAddress = astFileHeader.ReadAsInt(3),
+                    RomReserved4 = astFileHeader.ReadAsInt(4),
+                    RomBusMonitoringTimeGate = astFileHeader.ReadAsInt(5),
+                    RomReserved6 = astFileHeader.ReadAsInt(6),
+                    RomRamOffset = astFileHeader.ReadAsUInt(7),
+                };
+            }
+            return robFileHeader;
         }
     }
 }
