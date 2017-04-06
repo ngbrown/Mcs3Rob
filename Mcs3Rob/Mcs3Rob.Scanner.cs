@@ -95,12 +95,17 @@ namespace Mcs3Rob
         private int YY_START_LAST = 0;
         private int charHeaderCount = 0;
 
+        private void ResetCharHeader()
+        {
+            charHeaderCount = 0;
+        }
+
         private Token GetCharHeader()
         {
             if (YY_START_LAST != YY_START)
             {
                 YY_START_LAST = YY_START;
-                charHeaderCount = 0;
+                ResetCharHeader();
             }
 
             if (YY_START == CHARLINE2HEADER || YY_START == CHARMAP2HEADER || YY_START == CHARSPACEHEADER)

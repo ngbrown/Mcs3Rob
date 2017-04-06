@@ -80,6 +80,7 @@ ListText        {NotComma}*
 
     ^"PROVARI2" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(VARIABLELIST);
         yy_push_state(PROVARI2HEADER);
         StartCountdown(2);
@@ -88,6 +89,7 @@ ListText        {NotComma}*
 
     ^"PROCONST2" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(VARIABLELIST);
         yy_push_state(PROCONST2HEADER);
         StartCountdown(2);
@@ -96,6 +98,7 @@ ListText        {NotComma}*
 
     ^"CHARLINE2" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(QAXIS);
         yy_push_state(UAXIS);
         yy_push_state(CHARLINE2HEADER);
@@ -105,6 +108,7 @@ ListText        {NotComma}*
 
     ^"CHARMAP2" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(QAXIS);
         yy_push_state(VAXIS);
         yy_push_state(UAXIS);
@@ -115,6 +119,7 @@ ListText        {NotComma}*
 
     ^"CHARSPACE" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(QAXIS);
         yy_push_state(WAXIS);
         yy_push_state(VAXIS);
@@ -126,6 +131,7 @@ ListText        {NotComma}*
 
     ^"ROMTEXT" {
         yy_clear_stack();
+        ResetCharHeader();
         yy_push_state(ROMTEXT);
         return Make(Token.ROMTEXT);
     }

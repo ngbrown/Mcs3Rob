@@ -177,3 +177,12 @@ $4018       ;Base ROM address for text storage
 2           ;Text type
 12          ;max length
 .           ;End marker
+
+
+ROMTEXT
+Calibration_Part_Number2   ;Description
+Calibration_Part_Number2   ;Label, must be unique
+$4025       ;Base ROM address for text storage
+2           ;Text type
+12          ;max length
+.           ;End marker
