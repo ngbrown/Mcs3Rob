@@ -1,0 +1,43 @@
+version: "0.0.1.{build}"
+
+platform: Any CPU
+configuration: Release
+
+init:
+- cmd: echo %APPVEYOR_BUILD_VERSION%
+
+cache: 
+- packages -> **\packages.config
+
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.cs'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}-{branch}'
+
+before_build:
+- cmd: appveyor-retry nuget restore -verbosity detailed
+
+build:
+  project: Mcs3Rob.sln
+  verbosity: minimal
+
+after_build:
+- ps: |
+    if (${env:APPVEYOR_REPO_TAG} -eq $true) {
+      $semver = ${env:APPVEYOR_BUILD_VERSION}
+    } else {
+      $semver = ${env:APPVEYOR_BUILD_VERSION} -ireplace '(\d+.\d+.\d+).(\d+)', "`$1-ci-`$2-${env:APPVEYOR_REPO_BRANCH}"
+      $semver = $semver.Substring(0, [System.Math]::Min(20, $semver.Length))
+    }
+    nuget pack Mcs3Rob\Mcs3Rob.csproj -properties "Configuration=${env:CONFIGURATION};Platform=AnyCPU" -symbols -version $semver
+
+deploy:
+- provider: Environment
+  name: NuGet.org
+  on:
+    appveyor_repo_tag: true
+
+artifacts:
+- path: '*.nupkg'
