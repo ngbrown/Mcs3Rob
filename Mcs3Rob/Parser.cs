@@ -348,7 +348,7 @@ namespace Mcs3Rob
                     Dimension = axisHeader.ReadAsInt(11),
                     GraduationTableAxisDirection = (RobDirection) axisHeader.ReadAsInt(12),
                     Reserve13 = axisHeader.ReadAsInt(13),
-                    GraduationModel = axisHeader.ReadAsInt(14),
+                    GraduationModel = (RobGraduationModel) axisHeader.ReadAsInt(14),
                     DefinitionValues =
                         astIndependantAxis.GraduationItems?.Items.Cast<AstFloat>().Select(x => x.Value).ToList(),
                 };
