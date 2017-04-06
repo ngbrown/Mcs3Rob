@@ -62,3 +62,113 @@ DEVPARAM
 0x0               ; line added for analog output control 
 0x02             ; line added for analog output control 
 .                 ; End marker rom description header
+
+;-------------------------------------------------------------------------
+PROCONST2
+0           ;reserve
+0           ;reserve
+
+0,0,0, 256,$4276,1, ,AE_MakeupFuel_RPM_Disable,RPM,X*25,0
+
+PROVARI2
+0           ;reserve
+0           ;reserve
+
+4,0,0, 5000,$1392,1, Cyl 1 injector base pulse width ,BPW_C1,ms,X*.004,2
+
+;Digital Values
+0,$01,0,0,$1220,2, ,CAN_Bus_Fail_b,
+
+
+CHARLINE2
+f(RPM)            ;Map Description
+BPW_EOIT_Angle    ;Label of Map
+$4182       ;Map Address
+0                 ; reserve = 0
+0                 ; reserve = 0
+
+                  ;*** U-Axis ***
+4                 ;MC value Element type
+0                 ;MC value direction 0=normal
+    0             ;U Axis min
+ 12750                  ;U Axis max
+$4178             ;ROM address graduation table (-1 means not in ROM)
+0                 ;U Axis Direction in MC model 0=normal
+Engine_Speed      ;U Description
+Engine_Speed      ;U Label
+RPM         ;U Unit
+X           ;U Formula
+0                 ;U Decimal Places
+$05               ;Dimension
+0                 ;Graduation table axis direction: 0=as map
+0                 ; reserve = 0
+1                 ;Graduation table in model: 0=normal
+.                 ;End marker U Axis
+
+                  ;*** Q-Axis ***    -----  OUTPUT  -----
+4                 ;MC value Element type
+0                 ;MC value direction 0=normal 1=inverse
+15                ;Q Min
+719               ;Q Max
+0                 ; reserve = 0
+0                 ; reserve = 0
+Run EOIT Target Angle   ;Q Axis Description
+EOIT_Target_Angle ;Q Axis Label
+deg               ;Q Unit
+x-540       ;Q Formula
+0                 ;Q Places
+0                 ; reserve = 0
+0                 ; reserve = 0
+0                 ; reserve = 0
+.                 ;End marker Q Axis
+
+CHARLINE2
+f(Temp_Engine_Ext)            ;Map Description
+Crk_EOIT_Angle    ;Label of Map
+$4196       ;Map Address
+0                 ; reserve = 0
+0                 ; reserve = 0
+
+                  ;*** U-Axis ***
+4                 ;MC value Element type
+0                 ;MC value direction 0=normal
+   0              ;U Axis min
+   340                  ;U Axis max
+$418c             ;ROM address graduation table (-1 means not in ROM)
+0                 ;U Axis Direction in MC model 0=normal
+Two byte Engine_Temp    ;U Description
+Temp_Engine_Ext   ;U Label
+deg C       ;U Unit
+X-40        ;U Formula
+0                 ;U Decimal Places
+$05               ;Dimension
+0                 ;Graduation table axis direction: 0=as map
+0                 ; reserve = 0
+1                 ;Graduation table in model: 0=normal
+.                 ;End marker U Axis
+
+                  ;*** Q-Axis ***    -----  OUTPUT  -----
+4                 ;MC value Element type
+0                 ;MC value direction 0=normal 1=inverse
+15                ;Q Min
+719               ;Q Max
+0                 ; reserve = 0
+0                 ; reserve = 0
+ Crank EOIT Angle       ;Q Axis Description
+EOIT_Target_Angle ;Q Axis Label
+deg               ;Q Unit
+x-540       ;Q Formula
+0                 ;Q Places
+0                 ; reserve = 0
+0                 ; reserve = 0
+0                 ; reserve = 0
+.                 ;End marker Q Axis
+
+
+ROMTEXT
+_Calibration_Part_Number         ;Description
+_Calibration_Part_Number   ;Label in Gredi, must be unique
+$4118       ;Base ROM address for text storage
+2                 ;Text type
+12                ;max length
+.                 ;End marker
