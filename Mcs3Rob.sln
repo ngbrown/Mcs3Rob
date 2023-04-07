@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcs3Rob", "Mcs3Rob\Mcs3Rob.csproj", "{6F251D70-753C-413B-974F-097C02F8E607}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcs3Rob", "Mcs3Rob\Mcs3Rob.csproj", "{6F251D70-753C-413B-974F-097C02F8E607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcs3Rob.Tests", "Mcs3Rob.Tests\Mcs3Rob.Tests.csproj", "{68014411-F79F-4B18-B5D2-139994F6F47F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcs3Rob.Tests", "Mcs3Rob.Tests\Mcs3Rob.Tests.csproj", "{68014411-F79F-4B18-B5D2-139994F6F47F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51F3C607-DFC7-4A90-B573-F0FAB54CBD8A}
 	EndGlobalSection
 EndGlobal

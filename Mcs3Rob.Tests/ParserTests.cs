@@ -18,7 +18,7 @@ namespace Mcs3Rob.Tests
         {
             var errorList = new List<Tuple<object, ErrorEventArgs>>();
 
-            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             var scannedTokens = parser.ScanTokens(fullPath);
@@ -34,7 +34,7 @@ namespace Mcs3Rob.Tests
         {
             var errorList = new List<Tuple<object, ErrorEventArgs>>();
 
-            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             Console.Write(parser.ParseAst(fullPath));
@@ -49,7 +49,7 @@ namespace Mcs3Rob.Tests
         {
             var errorList = new List<Tuple<object, ErrorEventArgs>>();
 
-            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\samples", fileName);
+            string fullPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\samples", fileName);
             var parser = new Mcs3Rob.Parser();
             parser.Error += (sender, args) => errorList.Add(new Tuple<object, ErrorEventArgs>(sender, args));
             var robFile = parser.Read(fullPath);
