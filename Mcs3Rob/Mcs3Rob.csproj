@@ -12,9 +12,15 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/ngbrown/Mcs3Rob.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>docs/README.md</PackageReadmeFile>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <NoWarn>CS1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\docs" />
+  </ItemGroup>
   <ItemGroup Label="Mcs3RobFiles">
     <None Include="Mcs3Rob.Parser.cs">
       <DependentUpon>Mcs3Rob.parser</DependentUpon>
@@ -53,6 +59,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="YaccLexTools" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
