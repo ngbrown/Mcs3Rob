@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <Version>0.0.4</Version>
+    <Version>0.5.0</Version>
     <Authors>Nathan Brown</Authors>
     <Company>Nathan Brown</Company>
     <PackageProjectUrl>https://github.com/ngbrown/Mcs3Rob</PackageProjectUrl>
